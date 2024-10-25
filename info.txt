@@ -1,0 +1,13 @@
+Base de datos(MySql): modalidades
+archivos sql: 
+	bd_modalidades.sql (contiene la creacion de la base de datos, tablas y ejecucion del archivo inserts_modalidades.sql).
+	inserts_modalidades.sql (contiene los "inserts" con los datos de prueba).
+
+HTML Y PHP
+Carpeta bd_login contiene los archivos necesarios para el inicio de sesion de 3 actores (alumnos, administradores y jefe de carrera)
+	index.php contiene la página del inicio de sesion de un usuario
+	db.php contiene la conexcion a la base de datos
+	alumno.php contiene la estructura de la pagina del alumno, solo puede inscribir una modalidad
+	admin.php contiene la estructura de la pagina del usuario administrador puede cambiar de modalidad del alumno
+	jefe.php contiene la estructura de la pagina del usuario jefe de carrera puede cambiar de modalida del alumno, agregar o quitar administradores
+	styles.css contiene los estilos de las paginas.

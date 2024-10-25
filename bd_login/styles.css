@@ -1,0 +1,83 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column; /* Cambia a columna para permitir más flexibilidad */
+    justify-content: flex-start; /* Alinea los elementos al inicio */
+    align-items: center;
+    background-color: #f4f4f4;
+    margin: 0;
+    overflow: auto; /* Permitir desplazamiento si es necesario */
+}
+
+.contenedor {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 400px; /* Aumenta el ancho del contenedor según lo necesites */
+    margin-top: 20px; /* Espaciado superior para que no esté pegado al borde superior */
+}
+
+h2 {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block; /* Hacer que el label ocupe el ancho completo */
+    margin-bottom: 10px; /* Espaciado debajo del label */
+}
+
+input[type="text"],
+input[type="password"],
+select {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+/* Estilo para el mensaje de error */
+.error-message {
+    color: red;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 5px;
+    padding: 10px;
+    margin-top: 15px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.mensaje {
+    color: #155724;
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 5px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.logout-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
