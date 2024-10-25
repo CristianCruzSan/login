@@ -2,7 +2,7 @@
 session_start();
 require 'db.php';
 
-$error = ""; // Variable para almacenar el mensaje de error
+$error = "";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $usuario = $_POST['usuario'];
@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif ($user['tipo_usuario'] === 'jefe') {
             header('Location: jefe.php');
         }
-        exit; // Asegura que no se ejecute más código después de la redirección
+        exit;
     } else {
         // Si las credenciales son incorrectas, asignar mensaje de error
         $error = "Usuario o contraseña incorrectos.";
@@ -50,7 +50,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="contenedor">
         <h2>Login de Usuarios</h2>
 
-        <!-- Mostrar mensaje de error solo si existe -->
         <?php if ($error): ?>
             <div class="error-message"><?php echo $error; ?></div>
         <?php endif; ?>

@@ -8,10 +8,9 @@ if ($_SESSION['tipo_usuario'] !== 'admin') {
     exit;
 }
 
-// Variable para mensajes
 $mensaje = "";
 
-// Manejar el cambio de modalidad
+// cambio de modalidad
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cambiar_modalidad'])) {
     $usuario_alumno = $_POST['usuario_alumno'];
     $nueva_modalidad = $_POST['nueva_modalidad'];
@@ -29,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cambiar_modalidad']))
     }
 }
 
-// Manejar búsqueda de alumnos
+// búsqueda de alumnos
 $search = isset($_POST['search']) ? $_POST['search'] : '';
 
 // Consultar todos los alumnos y sus modalidades
@@ -42,7 +41,7 @@ $stmt->bindParam(':search', $search_param);
 $stmt->execute();
 $alumnos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Manejar cerrar sesión
+// cerrar sesión
 if (isset($_POST['logout'])) {
     session_destroy();
     header('Location: index.php');
@@ -57,7 +56,6 @@ if (isset($_POST['logout'])) {
     <title>Administrador - Gestión de Alumnos</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-        /* Estilo para el botón de cerrar sesión */
         .logout-button {
             position: absolute;
             top: 20px;
@@ -69,7 +67,6 @@ if (isset($_POST['logout'])) {
     <div class="contenedor">
         <h2>Bienvenido Administrador: <?php echo $_SESSION['usuario']; ?></h2>
 
-        <!-- Botón de cerrar sesión -->
         <form method="POST" action="admin.php" class="logout-button">
             <button type="submit" name="logout">Cerrar Sesión</button>
         </form>

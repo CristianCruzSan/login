@@ -5,24 +5,23 @@ if ($_SESSION['tipo_usuario'] !== 'jefe') {
     exit;
 }
 
-// Conexión a la base de datos
 require 'db.php';
 
-// Manejar cerrar sesión
+
 if (isset($_POST['logout'])) {
     session_destroy();
     header('Location: index.php');
     exit;
 }
 
-// Variables
+
 $error = "";
 $mensaje = "";
 $administradores = [];
 $alumnos = [];
 $modalidades = ['Tesis', 'Tesina', 'Examen General de Conocimientos', 'Informe de Prácticas Profesionales', 'Proyecto Integral', 'Créditos Complementarios'];
 
-// Manejar la adición de un nuevo administrador
+// nuevo administrador
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_admin'])) {
     $nuevo_usuario = $_POST['nuevo_usuario'];
     $nueva_contrasena = $_POST['nueva_contrasena'];
@@ -56,7 +55,7 @@ $stmt = $conexion->prepare($query);
 $stmt->execute();
 $administradores = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Manejar la eliminación de un administrador
+// eliminación de un administrador
 if (isset($_POST['delete_admin'])) {
     $usuario_a_eliminar = $_POST['usuario'];
     
@@ -72,7 +71,7 @@ if (isset($_POST['delete_admin'])) {
     }
 }
 
-// Manejar la búsqueda y actualización de alumnos
+// búsqueda y actualización de alumnos
 if (isset($_POST['buscar_alumno'])) {
     $usuario_alumno = $_POST['usuario_alumno'];
     
@@ -108,7 +107,6 @@ if (isset($_POST['buscar_alumno'])) {
     <title>Jefe de Carrera</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-        /* Estilo para el botón de cerrar sesión */
         .logout-button {
             position: absolute;
             top: 20px;
@@ -135,7 +133,6 @@ if (isset($_POST['buscar_alumno'])) {
     <div class="contenedor">
         <h2>Bienvenido Jefe de Carrera: <?php echo $_SESSION['usuario']; ?></h2>
 
-        <!-- Botón de cerrar sesión -->
         <form method="POST" action="jefe.php" class="logout-button">
             <button type="submit" name="logout">Cerrar Sesión</button>
         </form>

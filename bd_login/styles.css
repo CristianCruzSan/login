@@ -1,12 +1,12 @@
 body {
     font-family: Arial, sans-serif;
     display: flex;
-    flex-direction: column; /* Cambia a columna para permitir más flexibilidad */
-    justify-content: flex-start; /* Alinea los elementos al inicio */
+    flex-direction: column; 
+    justify-content: flex-start; 
     align-items: center;
     background-color: #f4f4f4;
     margin: 0;
-    overflow: auto; /* Permitir desplazamiento si es necesario */
+    overflow: auto; 
 }
 
 .contenedor {
@@ -15,8 +15,8 @@ body {
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     text-align: center;
-    width: 400px; /* Aumenta el ancho del contenedor según lo necesites */
-    margin-top: 20px; /* Espaciado superior para que no esté pegado al borde superior */
+    width: 400px; 
+    margin-top: 20px; 
 }
 
 h2 {
@@ -24,8 +24,8 @@ h2 {
 }
 
 label {
-    display: block; /* Hacer que el label ocupe el ancho completo */
-    margin-bottom: 10px; /* Espaciado debajo del label */
+    display: block; 
+    margin-bottom: 10px;
 }
 
 input[type="text"],
@@ -53,7 +53,6 @@ button:hover {
     background-color: #45a049;
 }
 
-/* Estilo para el mensaje de error */
 .error-message {
     color: red;
     background-color: #f8d7da;

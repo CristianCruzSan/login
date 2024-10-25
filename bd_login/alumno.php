@@ -8,10 +8,9 @@ if ($_SESSION['tipo_usuario'] !== 'alumno') {
 // Conexión a la base de datos
 require 'db.php';
 
-// Variable para mensajes
 $mensaje = "";
 
-// Manejar el envío del formulario de inscripción
+// envío del formulario de inscripción
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $alumno = $_SESSION['usuario'];
     $modalidad = $_POST['modalidad'];
@@ -40,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Manejar cerrar sesión
+// cerrar sesión
 if (isset($_POST['logout'])) {
     session_destroy();
     header('Location: index.php');
@@ -55,7 +54,6 @@ if (isset($_POST['logout'])) {
     <title>Alumno - Inscripción Modalidad</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-        /* Estilo para el botón de cerrar sesión */
         .logout-button {
             position: absolute;
             top: 20px;
@@ -67,7 +65,6 @@ if (isset($_POST['logout'])) {
     <div class="contenedor">
         <h2>Bienvenido Alumno: <?php echo $_SESSION['usuario']; ?></h2>
 
-        <!-- Botón de cerrar sesión -->
         <form method="POST" action="alumno.php" class="logout-button">
             <button type="submit" name="logout">Cerrar Sesión</button>
         </form>
