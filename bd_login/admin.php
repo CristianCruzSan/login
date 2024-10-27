@@ -2,46 +2,77 @@
 session_start();
 require 'db.php';
 
-// Redirigir si no es administrador
+// Redirigir si no es admin
 if ($_SESSION['tipo_usuario'] !== 'admin') {
     header('Location: index.php');
     exit;
 }
 
 $mensaje = "";
+$error = "";
+$modalidad_actual = "";
 
-// cambio de modalidad
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cambiar_modalidad'])) {
-    $usuario_alumno = $_POST['usuario_alumno'];
-    $nueva_modalidad = $_POST['nueva_modalidad'];
+// Cambiar o inscribir modalidad
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['cambiar_modalidad'])) {
+        $usuario_estudiante = $_POST['usuario_estudiante'];
+        $nueva_modalidad = $_POST['nueva_modalidad'];
+        $fecha_inscripcion = date('Y-m-d');
 
-    // Actualizar la modalidad del alumno
-    $query = "UPDATE modalidades_ico SET modalidad = :nueva_modalidad WHERE alumno = :alumno";
-    $stmt = $conexion->prepare($query);
-    $stmt->bindParam(':nueva_modalidad', $nueva_modalidad);
-    $stmt->bindParam(':alumno', $usuario_alumno);
+        // Actualizar la modalidad en la base de datos
+        $query = "UPDATE modalidades_ico SET modalidad = :modalidad, fecha = :fecha WHERE estudiante = :estudiante";
+        $stmt = $conexion->prepare($query);
+        $stmt->bindParam(':estudiante', $usuario_estudiante);
+        $stmt->bindParam(':modalidad', $nueva_modalidad);
+        $stmt->bindParam(':fecha', $fecha_inscripcion);
 
-    if ($stmt->execute()) {
-        $mensaje = "Modalidad cambiada correctamente.";
-    } else {
-        $mensaje = "Error al cambiar la modalidad.";
+        if ($stmt->execute()) {
+            $mensaje = "Modalidad actualizada correctamente.";
+        } else {
+            $mensaje = "Error al actualizar la modalidad.";
+        }
+    } elseif (isset($_POST['inscribir_modalidad'])) {
+        $usuario_estudiante = $_POST['usuario_estudiante'];
+        $nueva_modalidad = $_POST['nueva_modalidad'];
+        $fecha_inscripcion = date('Y-m-d');
+
+        // Insertar nueva modalidad en la base de datos
+        $query = "INSERT INTO modalidades_ico (estudiante, modalidad, fecha) VALUES (:estudiante, :modalidad, :fecha)";
+        $stmt = $conexion->prepare($query);
+        $stmt->bindParam(':estudiante', $usuario_estudiante);
+        $stmt->bindParam(':modalidad', $nueva_modalidad);
+        $stmt->bindParam(':fecha', $fecha_inscripcion);
+
+        if ($stmt->execute()) {
+            $mensaje = "Modalidad inscrita correctamente.";
+        } else {
+            $mensaje = "Error al inscribir la modalidad.";
+        }
     }
 }
 
-// búsqueda de alumnos
-$search = isset($_POST['search']) ? $_POST['search'] : '';
+// Búsqueda de estudiante
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buscar_estudiante'])) {
+    $numero_cuenta = $_POST['numero_cuenta'];
 
-// Consultar todos los alumnos y sus modalidades
-$query = "SELECT u.usuario, m.modalidad FROM usuarios_ico u 
-          LEFT JOIN modalidades_ico m ON u.usuario = m.alumno 
-          WHERE u.tipo_usuario = 'alumno' AND (u.usuario LIKE :search OR m.modalidad LIKE :search)";
-$stmt = $conexion->prepare($query);
-$search_param = '%' . $search . '%';
-$stmt->bindParam(':search', $search_param);
-$stmt->execute();
-$alumnos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // Consultar la modalidad actual del estudiante
+    $query = "SELECT u.usuario, m.modalidad FROM usuarios_ico u 
+              LEFT JOIN modalidades_ico m ON u.usuario = m.estudiante 
+              WHERE u.usuario = :numero_cuenta";
+    $stmt = $conexion->prepare($query);
+    $stmt->bindParam(':numero_cuenta', $numero_cuenta);
+    $stmt->execute();
+    $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// cerrar sesión
+    if ($resultado) {
+        $modalidad_actual = $resultado['modalidad'] ?: 'No inscrito';
+        $usuario_estudiante = $resultado['usuario'];
+    } else {
+        $error = "Estudiante no encontrado.";
+    }
+}
+
+// Cerrar sesión
 if (isset($_POST['logout'])) {
     session_destroy();
     header('Location: index.php');
@@ -53,67 +84,53 @@ if (isset($_POST['logout'])) {
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Administrador - Gestión de Alumnos</title>
+    <title>Admin - Inscripción de Modalidad</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-        .logout-button {
-            position: absolute;
-            top: 20px;
-            right: 20px;
+        .error-message {
+            color: red;
+        }
+        .mensaje {
+            color: green;
         }
     </style>
 </head>
 <body>
     <div class="contenedor">
-        <h2>Bienvenido Administrador: <?php echo $_SESSION['usuario']; ?></h2>
+        <h2>Bienvenido Admin: <?php echo $_SESSION['usuario']; ?></h2>
 
         <form method="POST" action="admin.php" class="logout-button">
             <button type="submit" name="logout">Cerrar Sesión</button>
         </form>
 
+        <?php if ($error): ?>
+            <div class="error-message"><?php echo $error; ?></div>
+        <?php endif; ?>
+        
         <?php if ($mensaje): ?>
             <div class="mensaje"><?php echo $mensaje; ?></div>
         <?php endif; ?>
 
-        <h3>Buscar Alumnos</h3>
+        <h3>Buscar Estudiante</h3>
         <form method="POST" action="admin.php">
-            <input type="text" name="search" placeholder="Buscar por usuario o modalidad" value="<?php echo htmlspecialchars($search); ?>">
-            <button type="submit">Buscar</button>
+            <input type="text" name="numero_cuenta" placeholder="Número de cuenta" required>
+            <button type="submit" name="buscar_estudiante">Buscar</button>
         </form>
 
-        <h3>Lista de Alumnos</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>Usuario</th>
-                    <th>Modalidad Inscrita</th>
-                    <th>Cambiar Modalidad</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($alumnos as $alumno): ?>
-                    <tr>
-                        <td><?php echo $alumno['usuario']; ?></td>
-                        <td><?php echo $alumno['modalidad'] ?: 'No inscrito'; ?></td>
-                        <td>
-                            <form method="POST" action="admin.php">
-                                <input type="hidden" name="usuario_alumno" value="<?php echo $alumno['usuario']; ?>">
-                                <select name="nueva_modalidad" required>
-                                    <option value="" disabled selected>Elige una opción</option>
-                                    <option value="Tesis">Tesis</option>
-                                    <option value="Tesina">Tesina</option>
-                                    <option value="Examen General de Conocimientos">Examen General de Conocimientos</option>
-                                    <option value="Informe de Prácticas Profesionales">Informe de Prácticas Profesionales</option>
-                                    <option value="Proyecto Integral">Proyecto Integral</option>
-                                    <option value="Créditos Complementarios">Créditos Complementarios</option>
-                                </select>
-                                <button type="submit" name="cambiar_modalidad">Cambiar</button>
-                            </form>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+        <?php if ($modalidad_actual !== ""): ?>
+            <h3>Estudiante: <?php echo $usuario_estudiante; ?></h3>
+            <h3>Modalidad Actual: <?php echo $modalidad_actual; ?></h3>
+            <form method="POST" action="admin.php">
+                <input type="hidden" name="usuario_estudiante" value="<?php echo $usuario_estudiante; ?>">
+                <label for="nueva_modalidad">Selecciona Nueva Modalidad:</label>
+                <?php include 'menu_modalidades.php'; ?>
+                <?php if ($modalidad_actual !== 'No inscrito'): ?>
+                    <button type="submit" name="cambiar_modalidad">Cambiar Modalidad</button>
+                <?php else: ?>
+                    <button type="submit" name="inscribir_modalidad">Inscribir Modalidad</button>
+                <?php endif; ?>
+            </form>
+        <?php endif; ?>
     </div>
 </body>
 </html>

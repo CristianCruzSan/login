@@ -41,7 +41,7 @@ select {
 button {
     width: 100%;
     padding: 10px;
-    background-color: #4CAF50;
+    background-color: hsl(227, 64%, 20%);
     color: white;
     border: none;
     border-radius: 5px;
@@ -50,7 +50,7 @@ button {
 }
 
 button:hover {
-    background-color: #45a049;
+    background-color:hsl(227, 64%, 20%);
 }
 
 .error-message {

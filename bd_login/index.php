@@ -24,8 +24,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['tipo_usuario'] = $user['tipo_usuario'];
 
         // Redirigir según el tipo de usuario
-        if ($user['tipo_usuario'] === 'alumno') {
-            header('Location: alumno.php');
+        if ($user['tipo_usuario'] === 'estudiante') {
+            header('Location: estudiante.php');
         } elseif ($user['tipo_usuario'] === 'admin') {
             header('Location: admin.php');
         } elseif ($user['tipo_usuario'] === 'jefe') {
